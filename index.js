@@ -12,7 +12,7 @@ const {dbConnection} = require('./db/dbConnection')
 
 // initiate db dbConnection
 dbConnection();
-
+// just adding a comment to see if eceruything is okay
 app.get('/' , (req , res) =>{
   res.send("hello from home")
 })
