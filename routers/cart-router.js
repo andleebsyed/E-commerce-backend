@@ -35,13 +35,13 @@ CartRouter.route('/')
             $inc: { quantity: 1 }
           },
 
-          (err, result) => {
-            if (err) {
-              res.send(err);
-            } else {
-              res.json(result);
-            }
-          }
+          // (err, result) => {
+          //   if (err) {
+          //     res.send(err);
+          //   } else {
+          //     res.json(result);
+          //   }
+          // }
         )
       }
       catch (error) {
@@ -58,13 +58,13 @@ CartRouter.route('/')
             $inc: { quantity: -1 }
           },
 
-          (err, result) => {
-            if (err) {
-              res.send(err);
-            } else {
-              res.json(result);
-            }
-          }
+          // (err, result) => {
+          //   if (err) {
+          //     res.send(err);
+          //   } else {
+          //     res.json(result);
+          //   }
+          // }
         )
       }
       catch (error) {
