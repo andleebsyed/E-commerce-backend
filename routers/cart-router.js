@@ -7,7 +7,7 @@ CartRouter.route('/')
      const myCart = await Cart.find({})
      res.json({myCart :myCart})
   }catch(error){
-    res.json({status : false  , message : "couldn't collect the data" , errorMessaage : error.message})
+    res.status(400).json({status : false  , message : "couldn't collect the data" , errorMessaage : error.message})
   }
  
 })
@@ -19,7 +19,7 @@ CartRouter.route('/')
     res.json({SavedData : SavedData})
   }
   catch(error){
-    res.json({status : false , message : "failed to get the cart" , errorMessaage : error.message})
+    res.status(400).json({status : false , message : "failed to get the cart" , errorMessaage : error.message})
   }
 })
 

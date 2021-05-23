@@ -9,7 +9,6 @@ ProductsRouter.route('/')
   try{
     
     const myData = await Products.find({})
-    console.log({myData})
     res.json({myData : myData })
   }
   catch(error){
@@ -20,7 +19,6 @@ ProductsRouter.route('/')
 .post(async (req  , res) => {
   try{
     const data = req.body
-    console.log(data)
     const NewProduct = new Products(data)
     const SavedProduct =await  NewProduct.save()
     res.json({status : true  , SavedProduct})
