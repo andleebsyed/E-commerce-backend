@@ -1,12 +1,16 @@
 const mongoose = require('mongoose')
-function dbConnection(){
+async function dbConnection() {
   const URI = process.env['URI']
-mongoose.connect(URI ,  {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
-.then(() => console.log("db connected"))
-.catch(error => console.log(error.message))
+  try {
+    await mongoose.connect(URI, {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+    })
+    console.log("db connected")
+  }
+  catch (error) {
+    console.log(error)
+  }
 }
 
-module.exports = {dbConnection}
+module.exports = { dbConnection }
