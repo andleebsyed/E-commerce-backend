@@ -39,5 +39,51 @@ const SignUp = async (req, res) => {
     });
   }
 };
-
-module.exports = { SignUp };
+const Login = async (req, res) => {
+  try {
+    const secret = process.env.SECRET;
+    const { userDetails } = req.body;
+    const ourUser = await User.findOne({ username: userDetails.username });
+    if (ourUser) {
+      const validPassword = await bcrypt.compare(
+        userDetails.password,
+        ourUser.password
+      );
+      if (validPassword) {
+        const token = jwt.sign({ userId: ourUser._id }, secret, {
+          expiresIn: "24h",
+        });
+        res.json({
+          status: true,
+          allowUser: true,
+          message: "logged in successfully",
+          token,
+          userId: ourUser._id,
+          notesData: {
+            labels: ourUser.labels,
+            notess: ourUser.notes,
+          },
+        });
+      } else {
+        res.json({
+          status: true,
+          allowUser: false,
+          message: "username and/or password incorrect",
+        });
+      }
+    } else {
+      res.json({
+        status: true,
+        allowUser: false,
+        message: "username and/or password incorrect",
+      });
+    }
+  } catch (error) {
+    res.json({
+      status: false,
+      errorDetail: error,
+      errorMesssage: error.message,
+    });
+  }
+};
+module.exports = { SignUp, Login };
