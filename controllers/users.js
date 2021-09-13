@@ -39,11 +39,9 @@ const Login = async (req, res) => {
   try {
     const secret = process.env.SECRET;
     const userDetails = req.body;
-    const ourUser = await (
-      await User.findOne({ username: userDetails.username })
-    )
-      .select("-__v -password")
-      .populated("wishlist cart");
+    const ourUser = await User.findOne({ username: userDetails.username })
+      .select("-__v ")
+      .populate("wishlist cart");
     if (ourUser) {
       const validPassword = await bcrypt.compare(
         userDetails.password,
@@ -53,16 +51,14 @@ const Login = async (req, res) => {
         const token = jwt.sign({ userId: ourUser._id }, secret, {
           expiresIn: "24h",
         });
+        ourUser.password = undefined;
         res.json({
           status: true,
           allowUser: true,
           message: "logged in successfully",
           token,
           userId: ourUser._id,
-          notesData: {
-            labels: ourUser.labels,
-            notess: ourUser.notes,
-          },
+          account: ourUser,
         });
       } else {
         res.json({
@@ -89,9 +85,9 @@ const Login = async (req, res) => {
 const Account = async (req, res) => {
   try {
     const { userId } = req.body;
-    const user = await User.findById(userId).select(
-      "-__v -password -wishlist -cart"
-    );
+    const user = await User.findById(userId)
+      .select("-__v -password ")
+      .populate("wishlist cart");
     console.log({ user });
     res.json({
       status: true,
