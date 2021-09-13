@@ -34,11 +34,20 @@ WishlistRouter.post("/", verifyToken, async (req, res) => {
   }
 });
 
-WishlistRouter.route("/:id").delete(async (req, res) => {
-  const { id } = req.params;
+WishlistRouter.route("/:productId").delete(verifyToken, async (req, res) => {
   try {
-    await Wishlist.remove({ _id: id });
-    res.json({ staus: true, message: "deleted successfully" });
+    const { productId } = req.params;
+    const { userId } = req.body;
+    console.log(productId, " product id");
+    const user = await User.findById(userId);
+    console.log(user.wishlist);
+    user.wishlist = user.wishlist.filter(
+      (singleProductId) => !singleProductId.equals(productId)
+    );
+    const response = await user.save();
+    // await Wishlist.remove({ _id: id });
+
+    res.json({ status: true, message: "deleted successfully" });
   } catch (error) {
     res.json({
       status: false,

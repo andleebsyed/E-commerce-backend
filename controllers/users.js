@@ -88,7 +88,6 @@ const Account = async (req, res) => {
     const user = await User.findById(userId)
       .select("-__v -password ")
       .populate("wishlist cart");
-    console.log({ user });
     res.json({
       status: true,
       message: "user Account fetched successfully",
