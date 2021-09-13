@@ -3,16 +3,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const SignUp = async (req, res) => {
   try {
-    console.log(req.body);
     const secret = process.env.SECRET;
     let userDetails = req.body;
-    console.log("coming here or not ", userDetails);
     const newUser = new User(userDetails);
     const salt = await bcrypt.genSalt(10);
-
     newUser.password = await bcrypt.hash(newUser.password, salt);
     const SavedUser = await newUser.save();
-    console.log({ SavedUser });
     const token = jwt.sign({ userId: SavedUser._id }, secret, {
       expiresIn: "24h",
     });
@@ -42,7 +38,7 @@ const SignUp = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const secret = process.env.SECRET;
-    const { userDetails } = req.body;
+    const userDetails = req.body;
     const ourUser = await User.findOne({ username: userDetails.username });
     if (ourUser) {
       const validPassword = await bcrypt.compare(
