@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-app.use(cors());
+var bodyParser = require("body-parser");
 require("dotenv").config();
+app.use(cors());
 app.use(express.json());
+app.use(bodyParser.json());
 const { ProductsRouter } = require("./routers/products-router");
 const { WishlistRouter } = require("./routers/wishlist-router");
 const { CartRouter } = require("./routers/cart-router");
