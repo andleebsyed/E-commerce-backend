@@ -32,3 +32,5 @@ const SignUp = async (req, res) => {
     });
   }
 };
+
+module.exports = { SignUp };
