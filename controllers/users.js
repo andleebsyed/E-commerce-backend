@@ -39,7 +39,11 @@ const Login = async (req, res) => {
   try {
     const secret = process.env.SECRET;
     const userDetails = req.body;
-    const ourUser = await User.findOne({ username: userDetails.username });
+    const ourUser = await (
+      await User.findOne({ username: userDetails.username })
+    )
+      .select("-__v -password")
+      .populated("wishlist cart");
     if (ourUser) {
       const validPassword = await bcrypt.compare(
         userDetails.password,
@@ -85,7 +89,9 @@ const Login = async (req, res) => {
 const Account = async (req, res) => {
   try {
     const { userId } = req.body;
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select(
+      "-__v -password -wishlist -cart"
+    );
     console.log({ user });
     res.json({
       status: true,
