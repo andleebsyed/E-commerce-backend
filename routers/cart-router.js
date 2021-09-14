@@ -86,10 +86,16 @@ CartRouter.route("/")
     }
   });
 
-CartRouter.route("/:id").delete(async (req, res) => {
-  const { id } = req.params;
+CartRouter.route("/:productId").delete(verifyToken, async (req, res) => {
+  const { productId } = req.params;
   try {
-    await Cart.remove({ _id: id });
+    // await Cart.remove({ _id: id });
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    user.cart = user.cart.filter(
+      (singleProductId) => !singleProductId.equals(productId)
+    );
+    await user.save();
     res.json({ staus: true, message: "deleted successfully" });
   } catch (error) {
     res.json({
