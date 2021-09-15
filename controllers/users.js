@@ -121,4 +121,25 @@ const SaveAddress = async (req, res) => {
     });
   }
 };
-module.exports = { SignUp, Login, Account, SaveAddress };
+const RemoveAddress = async (req, res) => {
+  try {
+    const { addressId, userId } = req.body;
+    const user = await User.findById(userId);
+    user.addresses = user.addresses.filter(
+      (address) => !address._id.equals(addressId)
+    );
+    const response = await user.save();
+    res.json({
+      status: true,
+      message: "address deleted successfully",
+      addresses: response.addresses,
+    });
+  } catch (error) {
+    res.json({
+      status: false,
+      message: "failed to delete the  address",
+      errorDetail: error.message,
+    });
+  }
+};
+module.exports = { SignUp, Login, Account, SaveAddress, RemoveAddress };
