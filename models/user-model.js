@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
+const AddressSchema = Schema({
+  name: String,
+  address: String,
+  pincode: Number,
+  locality: String,
+  district: String,
+});
 const UserSchema = Schema({
   name: {
     type: String,
@@ -21,6 +28,7 @@ const UserSchema = Schema({
   },
   cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
+  addresses: [AddressSchema],
 });
 
 const User = model("User", UserSchema);
