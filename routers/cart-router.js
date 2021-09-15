@@ -106,4 +106,20 @@ CartRouter.route("/:productId").delete(verifyToken, async (req, res) => {
   }
 });
 
+CartRouter.post("/emptycart", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    user.cart = [];
+    const response = await user.save();
+    res.json({ status: true, message: "cart emptied successfully" });
+  } catch (error) {
+    res.json({
+      status: false,
+      message: "failed to empty the cart",
+      errorDetail: error.message,
+    });
+  }
+});
+
 module.exports = { CartRouter };
