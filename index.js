@@ -11,6 +11,8 @@ const { WishlistRouter } = require("./routers/wishlist-router");
 const { CartRouter } = require("./routers/cart-router");
 const { dbConnection } = require("./db/dbConnection");
 const { UserRouter } = require("./routers/user-router");
+const { verifyToken } = require("./middlewares/verifyToken");
+const { MakeOrder } = require("./controllers/order");
 
 // initiate db dbConnection
 dbConnection();
@@ -20,8 +22,9 @@ app.get("/", (req, res) => {
 
 app.use("/products", ProductsRouter);
 app.use("/wishlist", WishlistRouter);
-app.use("/cart", CartRouter);
+app.use("/cart", verifyToken, CartRouter);
 app.use("/user", UserRouter);
+app.post("/order", verifyToken, MakeOrder);
 
 app.use((req, res) => {
   res.status(404).json({
