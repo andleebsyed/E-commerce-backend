@@ -3,9 +3,8 @@ const { Schema, model } = mongoose;
 const AddressSchema = Schema({
   name: String,
   address: String,
-  pincode: Number,
-  locality: String,
-  district: String,
+  pincode: String,
+  city: String,
 });
 const UserSchema = Schema({
   name: {

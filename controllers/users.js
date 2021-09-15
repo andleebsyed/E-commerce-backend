@@ -101,4 +101,24 @@ const Account = async (req, res) => {
     });
   }
 };
-module.exports = { SignUp, Login, Account };
+
+const SaveAddress = async (req, res) => {
+  try {
+    const { address, userId } = req.body;
+    const user = await User.findById(userId);
+    user.addresses.push(address);
+    const response = await user.save();
+    res.json({
+      status: true,
+      message: "address added successfully",
+      addresses: response.addresses,
+    });
+  } catch (error) {
+    res.json({
+      status: false,
+      message: "failed to add new address",
+      errorDetail: error.message,
+    });
+  }
+};
+module.exports = { SignUp, Login, Account, SaveAddress };
