@@ -19,6 +19,7 @@
     "faker": "^5.5.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.5",
+    "nodemon": "^2.0.12",
     "razorpay": "^2.0.6",
     "shortid": "^2.2.16"
   }
