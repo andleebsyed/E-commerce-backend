@@ -25,7 +25,12 @@ const UserSchema = Schema({
     type: String,
     required: true,
   },
-  cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
+  cart: [
+    {
+      product: { type: mongoose.Schema.Types.ObjectId, ref: "Products" },
+      quantity: Number,
+    },
+  ],
   wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Products" }],
   addresses: [AddressSchema],
 });

@@ -20,10 +20,14 @@ CartRouter.route("/")
     try {
       const { productId, userId } = req.body;
       const user = await User.findById(userId);
-      user.cart.push(productId);
+      user.cart.push({ product: productId, quantity: 1 });
       // const newProduct = new Cart(data)
       // const SavedData = await newProduct.save()
-      const response = await user.save();
+      const response = await user
+        .save()
+        .then((t) => t.populate("wishlist,  cart.product").execPopulate());
+      response.password = undefined;
+      response.__v = undefined;
       res.json({
         status: true,
         message: "profduct saved to cart successfully",
@@ -38,26 +42,26 @@ CartRouter.route("/")
     }
   })
 
-  .put(async (req, res) => {
-    const id = req.body._id;
+  .put(verifyToken, async (req, res) => {
+    const { wholeProductId, userId } = req.body;
+    console.log({ wholeProductId });
     const paramCase = req.param("case");
+    const user = await User.findById(userId);
+    console.log({ user });
+    const productToUpdateIndex = user.cart.findIndex((product) =>
+      product._id.equals(wholeProductId)
+    );
     // for increment
     if (paramCase === "inc") {
+      console.log("incc detected");
       try {
-        Cart.updateOne(
-          { _id: id },
-          {
-            $inc: { quantity: 1 },
-          }
-
-          // (err, result) => {
-          //   if (err) {
-          //     res.send(err);
-          //   } else {
-          //     res.json(result);
-          //   }
-          // }
-        );
+        user.cart[productToUpdateIndex].quantity =
+          user.cart[productToUpdateIndex].quantity + 1;
+        await user.save();
+        res.json({
+          status: true,
+          message: "updated quantity successfully(inc)",
+        });
       } catch (error) {
         res.json({ message: "failed", errMessage: error.message });
       }
@@ -66,20 +70,13 @@ CartRouter.route("/")
     //for decrement
     else {
       try {
-        Cart.updateOne(
-          { _id: id },
-          {
-            $inc: { quantity: -1 },
-          }
-
-          // (err, result) => {
-          //   if (err) {
-          //     res.send(err);
-          //   } else {
-          //     res.json(result);
-          //   }
-          // }
-        );
+        user.cart[productToUpdateIndex].quantity =
+          user.cart[productToUpdateIndex].quantity - 1;
+        await user.save();
+        res.json({
+          status: true,
+          message: "updated quantity successfully(dec)",
+        });
       } catch (error) {
         res.json({ message: "failed", errMessage: error.message });
       }
@@ -93,7 +90,7 @@ CartRouter.route("/:productId").delete(verifyToken, async (req, res) => {
     const { userId } = req.body;
     const user = await User.findById(userId);
     user.cart = user.cart.filter(
-      (singleProductId) => !singleProductId.equals(productId)
+      (singleProduct) => !singleProduct.product.equals(productId)
     );
     await user.save();
     res.json({ staus: true, message: "deleted successfully" });
