@@ -42,4 +42,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(9000, () => console.log("Express up and running...."));
+app.listen(process.env.PORT || 9000, () =>
+  console.log("Express up and running....")
+);

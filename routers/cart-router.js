@@ -44,10 +44,8 @@ CartRouter.route("/")
 
   .put(verifyToken, async (req, res) => {
     const { wholeProductId, userId } = req.body;
-    console.log({ wholeProductId });
-    const paramCase = req.param("case");
+    const paramCase = req.params("case");
     const user = await User.findById(userId);
-    console.log({ user });
     const productToUpdateIndex = user.cart.findIndex((product) =>
       product._id.equals(wholeProductId)
     );
@@ -86,7 +84,6 @@ CartRouter.route("/")
 CartRouter.route("/:productId").delete(verifyToken, async (req, res) => {
   const { productId } = req.params;
   try {
-    // await Cart.remove({ _id: id });
     const { userId } = req.body;
     const user = await User.findById(userId);
     user.cart = user.cart.filter(
