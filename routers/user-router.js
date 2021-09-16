@@ -6,6 +6,7 @@ const {
   SaveAddress,
   RemoveAddress,
   UpdateProfile,
+  UpdatePassword,
 } = require("../controllers/users");
 const { verifyToken } = require("../middlewares/verifyToken");
 const UserRouter = express.Router();
@@ -15,5 +16,6 @@ UserRouter.post("/account", verifyToken, Account);
 UserRouter.post("/addaddress", verifyToken, SaveAddress);
 UserRouter.post("/removeaddress", verifyToken, RemoveAddress);
 UserRouter.post("/updateprofile", verifyToken, UpdateProfile);
+UserRouter.post("/updatepassword", verifyToken, UpdatePassword);
 
 module.exports = { UserRouter };

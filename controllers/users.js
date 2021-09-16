@@ -202,7 +202,29 @@ const UpdateProfile = async (req, res) => {
     });
   }
 };
-
+const UpdatePassword = async (req, res) => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+    const currentUser = await User.findById(userId);
+    const validPassword = await bcrypt.compare(
+      currentPassword,
+      currentUser.password
+    );
+    if (validPassword) {
+      const salt = await bcrypt.genSalt(10);
+      currentUser.password = await bcrypt.hash(newPassword, salt);
+      await currentUser.save();
+      res.json({ status: true, message: "Password updated" });
+    } else {
+      res.status(500).json({
+        status: false,
+        message: "Current Password incorrect.Try again with correct password.",
+      });
+    }
+  } catch (error) {
+    res.json({ status: false, message: error.message });
+  }
+};
 module.exports = {
   SignUp,
   Login,
@@ -210,4 +232,5 @@ module.exports = {
   SaveAddress,
   RemoveAddress,
   UpdateProfile,
+  UpdatePassword,
 };
