@@ -44,7 +44,7 @@ CartRouter.route("/")
 
   .put(verifyToken, async (req, res) => {
     const { wholeProductId, userId } = req.body;
-    const paramCase = req.params("case");
+    const paramCase = req.param("case");
     const user = await User.findById(userId);
     const productToUpdateIndex = user.cart.findIndex((product) =>
       product._id.equals(wholeProductId)
