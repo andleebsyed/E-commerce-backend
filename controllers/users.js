@@ -143,4 +143,71 @@ const RemoveAddress = async (req, res) => {
   }
 };
 
-module.exports = { SignUp, Login, Account, SaveAddress, RemoveAddress };
+const UpdateProfile = async (req, res) => {
+  let msg;
+  console.log(req.body, " req.body");
+
+  try {
+    const { userId, newUsername, newEmail, newName } = req.body;
+    async function checkForExistingEmail() {
+      const ifEmailPresent = await User.findOne({ email: newEmail });
+
+      if (ifEmailPresent && !ifEmailPresent._id.equals(userId)) {
+        return res.status(500).json({
+          status: false,
+          unique: false,
+          message: "email already in use",
+        });
+      } else {
+        return false;
+      }
+    }
+
+    async function checkForExistingUserName() {
+      const ifUsernamePresent = await User.findOne({ username: newUsername });
+      if (ifUsernamePresent && !ifUsernamePresent._id.equals(userId)) {
+        return res.status(500).json({
+          status: false,
+          unique: false,
+          message: "username already in use",
+        });
+      } else {
+        return false;
+      }
+    }
+    const emailStatus = await checkForExistingEmail();
+    const usernameStatus = await checkForExistingUserName();
+
+    if (emailStatus === false && usernameStatus === false) {
+      const response = await User.findOneAndUpdate(
+        { _id: userId },
+        { username: newUsername, email: newEmail, name: newName },
+        { new: true }
+      )
+        .select("-__v -password")
+        .populate("cart wishlist");
+      return res.json({
+        status: true,
+        message: "User Updated successfully",
+        account: response,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      status: false,
+      message: "couldn't update user",
+      newMessage: msg,
+      error: error,
+      errMessage: error.message,
+    });
+  }
+};
+
+module.exports = {
+  SignUp,
+  Login,
+  Account,
+  SaveAddress,
+  RemoveAddress,
+  UpdateProfile,
+};
