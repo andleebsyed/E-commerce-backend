@@ -15,7 +15,7 @@ WishlistRouter.get("/", async (req, res) => {
 });
 WishlistRouter.post("/", verifyToken, async (req, res) => {
   try {
-    console.log({ userId }, { productId });
+    const { userId, productId } = req.body;
     const user = await User.findById(userId);
     user.wishlist.push(productId);
     const response = await user.save();
