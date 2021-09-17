@@ -1,4 +1,5 @@
 const { User } = require("../models/user-model");
+const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const SignUp = async (req, res) => {
@@ -225,6 +226,34 @@ const UpdatePassword = async (req, res) => {
     res.json({ status: false, message: error.message });
   }
 };
+
+const GuestAccess = async (req, res) => {
+  try {
+    const secret = process.env.SECRET;
+    const userId = mongoose.Types.ObjectId("6143353d1eff2741acd9556a");
+    const ourUser = await User.findById(userId)
+      .select("-__v ")
+      .populate("wishlist cart.products");
+    const token = jwt.sign({ userId: ourUser._id }, secret, {
+      expiresIn: "24h",
+    });
+    ourUser.password = undefined;
+    res.json({
+      status: true,
+      allowUser: true,
+      message: "logged in successfully",
+      token,
+      userId: ourUser._id,
+      account: ourUser,
+    });
+  } catch (error) {
+    res.json({
+      status: false,
+      errorDetail: error,
+      errorMesssage: error.message,
+    });
+  }
+};
 module.exports = {
   SignUp,
   Login,
@@ -233,4 +262,5 @@ module.exports = {
   RemoveAddress,
   UpdateProfile,
   UpdatePassword,
+  GuestAccess,
 };
