@@ -233,7 +233,7 @@ const GuestAccess = async (req, res) => {
     const userId = mongoose.Types.ObjectId("6143353d1eff2741acd9556a");
     const ourUser = await User.findById(userId)
       .select("-__v ")
-      .populate("wishlist cart.products");
+      .populate("wishlist cart.product");
     const token = jwt.sign({ userId: ourUser._id }, secret, {
       expiresIn: "24h",
     });
@@ -245,6 +245,7 @@ const GuestAccess = async (req, res) => {
       token,
       userId: ourUser._id,
       account: ourUser,
+      // cart: ourUser.cart,
     });
   } catch (error) {
     res.json({
