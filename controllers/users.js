@@ -42,7 +42,7 @@ const Login = async (req, res) => {
     const userDetails = req.body;
     const ourUser = await User.findOne({ username: userDetails.username })
       .select("-__v ")
-      .populate("wishlist cart.products");
+      .populate("wishlist cart.product");
     if (ourUser) {
       const validPassword = await bcrypt.compare(
         userDetails.password,
@@ -186,7 +186,7 @@ const UpdateProfile = async (req, res) => {
         { new: true }
       )
         .select("-__v -password")
-        .populate("cart.products wishlist");
+        .populate("cart.product wishlist");
       return res.json({
         status: true,
         message: "User Updated successfully",
